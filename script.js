@@ -1,29 +1,71 @@
-const categoriesContainer = document.getElementById("categories");
-
-document.getElementById("addCategoryBtn").addEventListener("click", () => {
-
-const categoryBox = document.createElement("div");
-categoryBox.style.border = "1px solid black";
-categoryBox.style.padding = "10px";
-categoryBox.style.margin = "10px 0";
-
-categoryBox.innerHTML = `
-    <input type="text" placeholder="Category Name">
-    <div class="expenses"></div>
-    <button class="addExpenseBtn">Add Expense</button>
-`;
-
-categoriesContainer.appendChild(categoryBox);
-
-const addExpenseBtn = categoryBox.querySelector(".addExpenseBtn");
-const expensesDiv = categoryBox.querySelector(".expenses");
-
-addExpenseBtn.addEventListener("click", () => {
-    const expenseInput = document.createElement("input");
-
-    expenseInput.placeholder = "Expense Amount";
+function createRowNoButtons(name, subtext) {
+    const div = document.createElement("div");
+    const title = document.createElement("h4");
+    const paragraph = document.createElement("p")
     
-    expensesDiv.appendChild(expenseInput);
-    expensesDiv.appendChild(document.createElement("br"));
-    });
-});
+    title.textContent = name;
+    paragraph.textContent = subtext;
+    div.append(title).append(paragraph)
+    document.getElementById("category").appendChild(div);
+    
+}
+
+function createRow(name, subtext) {
+    let currentName = name;
+    let userInput = subtext;
+
+    const div = document.createElement("div");
+    const update = document.createElement("button");
+    const del = document.createElement("button");
+    const title = document.createElement("h4");
+    const paragraph = document.createElement("p");
+    
+    title.textContent = currentName;
+    update.textContent = "Update";
+    del.textContent = "Delete";
+    paragraph.textContent = userInput;
+
+    del.onclick = function() {
+        fetch("http://127.0.0.1:8000/categories/" + currentName, {
+            method: "DELETE"
+        })
+        .then(response => response.json())
+        .then(function() {
+            div.remove();
+        })
+    }
+
+    update.onclick = function() {
+        const new_name = prompt("Enter new name: ")
+        fetch("http://127.0.0.1:8000/categories/" + currentName + "?new_name=" + new_name, {
+            method: "PUT"
+        })
+        .then(response => response.json())
+        .then(function() {
+            title.textContent = new_name;
+            currentName = new_name;
+        })
+    }
+
+    div.append(title, update, del)
+    document.getElementById("category").appendChild(div);
+}
+
+fetch("http://127.0.0.1:8000/")
+    .then(response => response.json())
+    .then(function(data) {
+        data.category.forEach(function(name) {
+            createRowNoButtons(name);
+        })
+    })
+
+function addCategory() {
+    const name = prompt("Enter Category Name: ")
+    fetch("http://127.0.0.1:8000/categories?name=" + name, {
+        method: "POST"
+    })
+    .then(response => response.json())
+    .then(function() {
+        createRow(name);
+    })
+}
