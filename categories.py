@@ -13,15 +13,21 @@ def add_category(name:str, subtext:str):
     return {"category": categories}
 
 @router.delete("/categories/{name}")
-def delete_category(name:str):
-    categories.remove(name)
-    return{"delete":categories}
+def delete_category(name: str):
+    for categ in categories:
+        if categ["name"] == name:
+            categories.remove(categ)
+            break
+    return {"delete": categories}
 
 @router.put("/categories/{name}")
-def update_category(name:str, new_name:str):
-    index = categories.index(name)
-    categories[index] = new_name
-    return{"update": categories}
+def update_category(name: str, new_name: str, new_subtext: str):
+    for categ in categories:
+        if categ["name"] == name:
+            categ["name"] = new_name
+            categ["subtext"] = new_subtext
+            break
+    return {"update": categories}
 
 
 
