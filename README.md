@@ -14,7 +14,7 @@
 #### - Backend >> Python, FastAPI
 #### - Frontend >> HTML, CSS, Vanilla Javascript
 
-#### A walkthrough of the core CRUD operations: adding, updating, and deleting categories:
+### A walkthrough of the core CRUD operations: adding, updating, and deleting categories:
 
 ![pic1](img_src_ReadME/1.png)
 
